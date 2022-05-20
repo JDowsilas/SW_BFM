@@ -149,6 +149,7 @@
     <Resource Include="images\Shrek.png" />
     <Resource Include="images\Sokol.gif" />
     <Resource Include="images\Wazowski.gif" />
+    <Resource Include="images\bossCrit.png" />
     <Content Include="music\game_over.wav" />
     <None Include="Resources\Wazowski.gif" />
     <None Include="Resources\Sokol.gif" />
