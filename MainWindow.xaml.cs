@@ -39,7 +39,7 @@ namespace SW_BFM
         int enemyCounter = 100; //counter for enemies
         int limit = 50; //limit of spawning enemies
         public static int score = 0;
-        int damage = 170;
+        int damage = 0;
         bool bossFight;
         int bossHP = 100;
         bool bossStop;
@@ -47,7 +47,6 @@ namespace SW_BFM
         int moveBoss = 0;
         Rectangle bossRect;
         Rectangle bossBar;
-
 
         int enemySpriteCounter = 0;
         int enemyHP = 1;
@@ -177,6 +176,7 @@ namespace SW_BFM
                                     itemRemover.Add(x);
                                     itemRemover.Add(y);
                                     bossWin = true;
+                                    
                                 }
                             }
 
@@ -197,7 +197,12 @@ namespace SW_BFM
                     {
                         itemRemover.Add(x);
                         damage += 5;
-                        hpBar.Width -= 5;
+                        if (hpBar.Width >= 5)
+                        {
+                            hpBar.Width -= 5;
+                        }
+                        else { hpBar.Width -= hpBar.Width; }
+                        
                     }
 
                 }
@@ -230,11 +235,15 @@ namespace SW_BFM
 
                     Rect enemyHitBox = new Rect(Canvas.GetLeft(x), Canvas.GetTop(x), x.Width, x.Height);
 
-                    if (playerHitBox.IntersectsWith(enemyHitBox)) //enemy touches player (future damage)
+                    if (playerHitBox.IntersectsWith(enemyHitBox)) //player damage
                     {
                         itemRemover.Add(x);
                         damage += 10;
-                        hpBar.Width -= 10;
+                        if (hpBar.Width >= 10)
+                        {
+                            hpBar.Width -= 10;
+                        }
+                        else { hpBar.Width -= hpBar.Width; }
                     }
                 }
                 if (x is Rectangle && (string)x.Tag == "specialbullet")
@@ -320,9 +329,10 @@ namespace SW_BFM
                 bossTimer.Stop();
                 bosscritTimer.Stop();
                 specialTimer.Stop();
+                GameOver();
             }
 
-                foreach (Rectangle i in itemRemover)
+            foreach (Rectangle i in itemRemover)
             {
                 GameCanvas.Children.Remove(i); //removing item from canvas
             }
@@ -384,9 +394,9 @@ namespace SW_BFM
         }
         private void SpecialCritLoop(object sender, EventArgs e)
         {
-            if (specialBar.Width < 200)
+            if (specialBar.Width == 201)
             {
-                specialBar.Width++;
+                specialBar.Width += 2;
             }
         }
         private void startButton_Click(object sender, RoutedEventArgs e)
@@ -415,6 +425,10 @@ namespace SW_BFM
             sp = new SoundPlayer(SW_BFM.Properties.Resources.game_over);
             sp.Play();
             SW_BFM.playerSummary ps = new SW_BFM.playerSummary();
+            if (bossWin)
+            {
+                ps.gameOverLabel.Content = "YOU WON";
+            }
             ps.Show();
             ps.finalScoreLabel.Content = "YOUR SCORE: " + score;
 
@@ -482,7 +496,7 @@ namespace SW_BFM
             }
             if (e.Key == Key.X)
             {
-                if (specialBar.Width == 200)
+                if (specialBar.Width == 201)
                 {
                     Rectangle newSpecial = new Rectangle
                     {
@@ -534,8 +548,8 @@ namespace SW_BFM
             Rectangle newEnemy = new Rectangle
             {
                 Tag = "enemy",
-                Height = 60,
-                Width = 60,
+                Height = 80,
+                Width = 80,
                 Fill = enemySprite,
             };
             Canvas.SetZIndex(newEnemy, 1); //enemies are under GUI
@@ -560,8 +574,8 @@ namespace SW_BFM
                 bossRect = new Rectangle
                 {
                     Tag = "boss",
-                    Height = 300,
-                    Width = 400,
+                    Height = 500,
+                    Width = 700,
                     Fill = bossImage
                 };
 
