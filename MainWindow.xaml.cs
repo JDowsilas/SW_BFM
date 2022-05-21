@@ -219,7 +219,7 @@ namespace SW_BFM
                     if (bossBulletHitBox.IntersectsWith(playerHitBox))
                     {
                         itemRemover.Add(x);
-                        damage = 100;
+                        damage = 200;
                         hpBar.Width = 0;
                     }
 
@@ -341,7 +341,7 @@ namespace SW_BFM
 
         private void BossLoop(object sender, EventArgs e)
         {
-            if (score > 50)
+            if (score > 20)
             {
                 bossFight = true;
                 BossFight();
@@ -373,7 +373,7 @@ namespace SW_BFM
         }
         private void BossCritLoop(object sender, EventArgs e)
         {
-            if (score > 50)
+            if (score > 20)
             {
                 ImageBrush critImage = new ImageBrush();
                 var image = new BitmapImage(new Uri(BaseUriHelper.GetBaseUri(this), @"images\bossCrit.png"));
@@ -387,7 +387,7 @@ namespace SW_BFM
                     Fill = critImage
 
                 };
-                Canvas.SetLeft(bossCrit, Canvas.GetLeft(bossRect) + rand.Next(-100, 600));
+                Canvas.SetLeft(bossCrit, Canvas.GetLeft(bossRect) + rand.Next(0, 600));
                 Canvas.SetTop(bossCrit, Canvas.GetTop(bossRect) + bossRect.Height / 2);
                 GameCanvas.Children.Add(bossCrit);
             }
@@ -569,13 +569,13 @@ namespace SW_BFM
             if (bossFight == true && bossStop == false)
             {
                 ImageBrush bossImage = new ImageBrush();
-                bossImage.ImageSource = new BitmapImage(new Uri(BaseUriHelper.GetBaseUri(this), @"images\AMOGUS.gif"));
+                bossImage.ImageSource = new BitmapImage(new Uri(BaseUriHelper.GetBaseUri(this), @"images\AMOGUS2.png"));
 
                 bossRect = new Rectangle
                 {
                     Tag = "boss",
-                    Height = 500,
-                    Width = 700,
+                    Height = 207,
+                    Width = 656,
                     Fill = bossImage
                 };
 
@@ -590,8 +590,8 @@ namespace SW_BFM
                 Canvas.SetTop(bossBar, 50);
                 Canvas.SetLeft(bossBar, 200);
 
-                Canvas.SetTop(bossRect, 10);
-                Canvas.SetLeft(bossRect, 60);
+                Canvas.SetTop(bossRect, 80);
+                Canvas.SetLeft(bossRect, 40);
 
                 GameCanvas.Children.Add(bossRect);
                 GameCanvas.Children.Add(bossBar);
