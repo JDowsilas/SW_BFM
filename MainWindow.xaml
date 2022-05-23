@@ -106,6 +106,14 @@
             </TextBlock.Foreground>
             STAR WARS<LineBreak/>BATTLE FOR MEMES
         </TextBlock>
+        <Label Canvas.ZIndex="3" Name="bosslabel" Content="BOSS HP:" Canvas.Left="210" Canvas.Top="22"  Height="32" Width="98" Background="{x:Null}" FontSize="18">
+            <Label.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="0"/>
+                    <GradientStop Color="Red" Offset="0.446"/>
+                </LinearGradientBrush>
+            </Label.Foreground>
+        </Label>
 
 
     </Canvas>

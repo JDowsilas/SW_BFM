@@ -100,7 +100,7 @@ namespace SW_BFM
             hpBar.Visibility = Visibility.Hidden;
             specialLabel.Visibility = Visibility.Hidden;
             specialBar.Visibility = Visibility.Hidden;
-
+            bosslabel.Visibility = Visibility.Hidden;
         }
         private void GameLoop(object sender, EventArgs e) //main game loop
         {
@@ -341,7 +341,7 @@ namespace SW_BFM
 
         private void BossLoop(object sender, EventArgs e)
         {
-            if (score > 20)
+            if (score > 1)
             {
                 bossFight = true;
                 BossFight();
@@ -373,7 +373,7 @@ namespace SW_BFM
         }
         private void BossCritLoop(object sender, EventArgs e)
         {
-            if (score > 20)
+            if (score > 1)
             {
                 ImageBrush critImage = new ImageBrush();
                 var image = new BitmapImage(new Uri(BaseUriHelper.GetBaseUri(this), @"images\bossCrit.png"));
@@ -394,9 +394,9 @@ namespace SW_BFM
         }
         private void SpecialCritLoop(object sender, EventArgs e)
         {
-            if (specialBar.Width == 201)
+            if (specialBar.Width < 200)
             {
-                specialBar.Width += 2;
+                specialBar.Width += 1;
             }
         }
         private void startButton_Click(object sender, RoutedEventArgs e)
@@ -496,7 +496,7 @@ namespace SW_BFM
             }
             if (e.Key == Key.X)
             {
-                if (specialBar.Width == 201)
+                if (specialBar.Width == 200)
                 {
                     Rectangle newSpecial = new Rectangle
                     {
@@ -568,6 +568,7 @@ namespace SW_BFM
         {
             if (bossFight == true && bossStop == false)
             {
+                bosslabel.Visibility = Visibility.Visible;
                 ImageBrush bossImage = new ImageBrush();
                 bossImage.ImageSource = new BitmapImage(new Uri(BaseUriHelper.GetBaseUri(this), @"images\AMOGUS2.png"));
 
@@ -584,11 +585,12 @@ namespace SW_BFM
                     Tag = "bossbar",
                     Height = 10,
                     Width = 100,
-                    Fill = Brushes.Red
+                    Fill = Brushes.Red,
                 };
 
                 Canvas.SetTop(bossBar, 50);
                 Canvas.SetLeft(bossBar, 200);
+                Canvas.SetZIndex(bossBar, 3);
 
                 Canvas.SetTop(bossRect, 80);
                 Canvas.SetLeft(bossRect, 40);
