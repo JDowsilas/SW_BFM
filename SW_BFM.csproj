@@ -141,6 +141,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>Database.mdf</DependentUpon>
     </Content>
+    <None Include="Resources\boss.wav" />
     <Resource Include="Sokol.gif" />
     <Resource Include="images\AMOGUS.gif" />
     <Resource Include="images\Harambe1.png" />
