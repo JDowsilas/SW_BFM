@@ -118,6 +118,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\win.wav" />
     <None Include="Resources\boss.wav" />
     <Resource Include="Sokol.gif" />
     <Resource Include="images\AMOGUS.gif" />

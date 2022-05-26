@@ -42,7 +42,7 @@ namespace SW_BFM
         int damage = 0;
 
         bool bossFight;
-        int bossHP = 100;
+        int bossHP = 150;
         bool bossStop;
         bool bossWin;
         int moveBoss = 0;
@@ -337,7 +337,7 @@ namespace SW_BFM
 
         private void BossLoop(object sender, EventArgs e)
         {
-            if (score > 1)
+            if (score > 50)
             {
                 bossFight = true;
                 BossFight();
@@ -369,7 +369,7 @@ namespace SW_BFM
         }
         private void BossCritLoop(object sender, EventArgs e)
         {
-            if (score > 1)
+            if (score > 50)
             {
                 ImageBrush critImage = new ImageBrush();
                 var image = new BitmapImage(new Uri(BaseUriHelper.GetBaseUri(this), @"images\bossCrit.png"));
@@ -418,12 +418,17 @@ namespace SW_BFM
         private void GameOver()
         {
             sp.Stop();
-            sp = new SoundPlayer(SW_BFM.Properties.Resources.game_over);
-            sp.Play();
             SW_BFM.playerSummary ps = new SW_BFM.playerSummary();
             if (bossWin)
             {
                 ps.gameOverLabel.Content = "YOU WON";
+                sp = new SoundPlayer(SW_BFM.Properties.Resources.win);
+                sp.Play();
+            }
+            else
+            {
+                sp = new SoundPlayer(SW_BFM.Properties.Resources.game_over);
+                sp.Play();
             }
             ps.Show();
             ps.finalScoreLabel.Content = "YOUR SCORE: " + score;
@@ -555,15 +560,12 @@ namespace SW_BFM
 
         }
 
-        private void SW_BFM_Load(object sender, EventArgs e)
-        {
-            
-        }
-
         private void BossFight()
         {
             if (bossFight == true && bossStop == false)
             {
+                sp = new SoundPlayer(SW_BFM.Properties.Resources.boss);
+                sp.PlayLooping();
                 bosslabel.Visibility = Visibility.Visible;
                 ImageBrush bossImage = new ImageBrush();
                 bossImage.ImageSource = new BitmapImage(new Uri(BaseUriHelper.GetBaseUri(this), @"images\AMOGUS2.png"));
@@ -580,7 +582,7 @@ namespace SW_BFM
                 {
                     Tag = "bossbar",
                     Height = 10,
-                    Width = 100,
+                    Width = 150,
                     Fill = Brushes.Red,
                 };
 
