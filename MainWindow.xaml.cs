@@ -28,6 +28,8 @@ namespace SW_BFM
         #region variables
         DispatcherTimer gameTimer = new DispatcherTimer(); //game main timer
         DispatcherTimer specialTimer = new DispatcherTimer(); // timer for special attack
+        DispatcherTimer bossTimer = new DispatcherTimer(); // boss shot timer
+        DispatcherTimer bosscritTimer = new DispatcherTimer(); // boss critshot timer
         SoundPlayer sp;
         List<Rectangle> itemRemover = new List<Rectangle>(); //list for removing items from canvas
         Random random = new Random();
@@ -37,8 +39,16 @@ namespace SW_BFM
         int enemyCounter = 100; //counter for enemies
         int limit = 50; //limit of spawning enemies
         public static int score = 0;
-        int damage = 170;
-       
+        int damage = 0;
+
+        bool bossFight;
+        int bossHP = 100;
+        bool bossStop;
+        bool bossWin;
+        int moveBoss = 0;
+        Rectangle bossRect;
+        Rectangle bossBar;
+
 
 
         int enemySpriteCounter = 0;
@@ -61,6 +71,12 @@ namespace SW_BFM
 
             specialTimer.Interval = TimeSpan.FromMilliseconds(150);
             specialTimer.Tick += SpecialCritLoop;
+
+            bossTimer.Interval = TimeSpan.FromMilliseconds(80);
+            bossTimer.Tick += BossLoop;
+
+            bosscritTimer.Interval = TimeSpan.FromMilliseconds(4000);
+            bosscritTimer.Tick += BossCritLoop;
 
             GameCanvas.Focus();
             sp = new SoundPlayer(SW_BFM.Properties.Resources.theme);
@@ -87,6 +103,7 @@ namespace SW_BFM
             hpBar.Visibility = Visibility.Hidden;
             specialLabel.Visibility = Visibility.Hidden;
             specialBar.Visibility = Visibility.Hidden;
+            bosslabel.Visibility = Visibility.Hidden;
 
         }
         private void GameLoop(object sender, EventArgs e) //main game loop
@@ -94,7 +111,7 @@ namespace SW_BFM
             playerHitBox = new Rect(Canvas.GetLeft(player), Canvas.GetTop(player), player.Width, player.Height); //hitbox of the player
             enemyCounter -= 1;
             scoreText.Content = "SCORE: " + score; //change score every tick
-            if (enemyCounter < 0)
+            if (enemyCounter < 0 && bossFight == false)
             {
                 MakeEnemies(); //spawn enemies
                 enemyCounter = limit;
@@ -149,7 +166,67 @@ namespace SW_BFM
                                 itemRemover.Add(x);
                             }
                         }
+                        if (y is Rectangle && (string)y.Tag == "boss")
+                        {
+                            Rect bossHit = new Rect(Canvas.GetLeft(y), Canvas.GetTop(y), y.Width, y.Height);
+
+                            if (bulletHitBox.IntersectsWith(bossHit))
+                            {
+                                bossHP -= 1;
+                                bossBar.Width = bossBar.Width - 1;
+                                itemRemover.Add(x);
+                                if (bossHP <= 0)
+                                {
+                                    itemRemover.Add(x);
+                                    itemRemover.Add(y);
+                                    bossWin = true;
+
+                                }
+                            }
+
+                        }
                     }
+                }
+                if (x is Rectangle && (string)x.Tag == "bossbullet")
+                {
+                    Canvas.SetTop(x, Canvas.GetTop(x) + 10);
+
+                    Rect bossBulletHitBox = new Rect(Canvas.GetLeft(x), Canvas.GetTop(x), x.Width, x.Height);
+                    if (Canvas.GetTop(x) > 700)
+                    {
+                        itemRemover.Add(x);
+                    }
+
+                    if (bossBulletHitBox.IntersectsWith(playerHitBox))
+                    {
+                        itemRemover.Add(x);
+                        damage += 5;
+                        if (hpBar.Width >= 5)
+                        {
+                            hpBar.Width -= 5;
+                        }
+                        else { hpBar.Width -= hpBar.Width; }
+
+                    }
+
+                }
+                if (x is Rectangle && (string)x.Tag == "bosscrit")
+                {
+                    Canvas.SetTop(x, Canvas.GetTop(x) + 2);
+
+                    Rect bossBulletHitBox = new Rect(Canvas.GetLeft(x), Canvas.GetTop(x), x.Width, x.Height);
+                    if (Canvas.GetTop(x) > 700)
+                    {
+                        itemRemover.Add(x);
+                    }
+
+                    if (bossBulletHitBox.IntersectsWith(playerHitBox))
+                    {
+                        itemRemover.Add(x);
+                        damage = 200;
+                        hpBar.Width = 0;
+                    }
+
                 }
                 if (x is Rectangle && (string)x.Tag == "enemy") //enemy movement
                 {
@@ -243,11 +320,73 @@ namespace SW_BFM
                 gameTimer.Stop();
                 GameOver();
             }
+            if (bossWin == true)
+            {
+                gameTimer.Stop();
+                bossTimer.Stop();
+                bosscritTimer.Stop();
+                specialTimer.Stop();
+                GameOver();
+            }
             foreach (Rectangle i in itemRemover)
             {
                 GameCanvas.Children.Remove(i); //removing item from canvas
             }
 
+        }
+
+        private void BossLoop(object sender, EventArgs e)
+        {
+            if (score > 1)
+            {
+                bossFight = true;
+                BossFight();
+
+                if (moveBoss == 0)
+                {
+                    Canvas.SetLeft(bossRect, Canvas.GetLeft(bossRect) + rand.Next(1, 3));
+                    moveBoss = 1;
+                }
+                if (moveBoss == 1)
+                {
+                    Canvas.SetLeft(bossRect, Canvas.GetLeft(bossRect) - rand.Next(1, 3));
+                    moveBoss = 0;
+                }
+
+
+                Rectangle bossBullet = new Rectangle
+                {
+                    Tag = "bossbullet",
+                    Height = 15,
+                    Width = 4,
+                    Fill = Brushes.Red
+                };
+
+                Canvas.SetLeft(bossBullet, Canvas.GetLeft(bossRect) + rand.Next(-100, 600));
+                Canvas.SetTop(bossBullet, Canvas.GetTop(bossRect) + bossRect.Height / 2);
+                GameCanvas.Children.Add(bossBullet);
+            }
+        }
+        private void BossCritLoop(object sender, EventArgs e)
+        {
+            if (score > 1)
+            {
+                ImageBrush critImage = new ImageBrush();
+                var image = new BitmapImage(new Uri(BaseUriHelper.GetBaseUri(this), @"images\bossCrit.png"));
+                critImage.ImageSource = image;
+
+                Rectangle bossCrit = new Rectangle
+                {
+                    Tag = "bosscrit",
+                    Height = 80,
+                    Width = 80,
+                    Fill = critImage
+
+                };
+                Canvas.SetLeft(bossCrit, Canvas.GetLeft(bossRect) + rand.Next(0, 600));
+                Canvas.SetTop(bossCrit, Canvas.GetTop(bossRect) + bossRect.Height / 2);
+                GameCanvas.Children.Add(bossCrit);
+            }
         }
         private void SpecialCritLoop(object sender, EventArgs e)
         {
@@ -260,6 +399,8 @@ namespace SW_BFM
         {
             gameTimer.Start();
             specialTimer.Start();
+            bossTimer.Start();
+            bosscritTimer.Start();
 
             player.Visibility = Visibility.Visible;
             gui.Visibility = Visibility.Visible;
@@ -280,6 +421,10 @@ namespace SW_BFM
             sp = new SoundPlayer(SW_BFM.Properties.Resources.game_over);
             sp.Play();
             SW_BFM.playerSummary ps = new SW_BFM.playerSummary();
+            if (bossWin)
+            {
+                ps.gameOverLabel.Content = "YOU WON";
+            }
             ps.Show();
             ps.finalScoreLabel.Content = "YOUR SCORE: " + score;
 
@@ -399,8 +544,8 @@ namespace SW_BFM
             Rectangle newEnemy = new Rectangle
             {
                 Tag = "enemy",
-                Height = 60,
-                Width = 60,
+                Height = 80,
+                Width = 80,
                 Fill = enemySprite,
             };
             Canvas.SetZIndex(newEnemy, 1); //enemies are under GUI
@@ -413,6 +558,43 @@ namespace SW_BFM
         private void SW_BFM_Load(object sender, EventArgs e)
         {
             
+        }
+
+        private void BossFight()
+        {
+            if (bossFight == true && bossStop == false)
+            {
+                bosslabel.Visibility = Visibility.Visible;
+                ImageBrush bossImage = new ImageBrush();
+                bossImage.ImageSource = new BitmapImage(new Uri(BaseUriHelper.GetBaseUri(this), @"images\AMOGUS2.png"));
+
+                bossRect = new Rectangle
+                {
+                    Tag = "boss",
+                    Height = 207,
+                    Width = 656,
+                    Fill = bossImage
+                };
+
+                bossBar = new Rectangle
+                {
+                    Tag = "bossbar",
+                    Height = 10,
+                    Width = 100,
+                    Fill = Brushes.Red,
+                };
+
+                Canvas.SetTop(bossBar, 50);
+                Canvas.SetLeft(bossBar, 200);
+                Canvas.SetZIndex(bossBar, 3);
+
+                Canvas.SetTop(bossRect, 80);
+                Canvas.SetLeft(bossRect, 40);
+
+                GameCanvas.Children.Add(bossRect);
+                GameCanvas.Children.Add(bossBar);
+                bossStop = true;
+            }
         }
 
     }
