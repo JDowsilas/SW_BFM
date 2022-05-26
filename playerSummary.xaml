@@ -1,12 +1,16 @@
 ﻿<Window x:Class="SW_BFM.playerSummary"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:grid="http://schemas.microsoft.com/wpf/2008/toolkit"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SW_BFM"
         mc:Ignorable="d"
         Title="playerSummary" Height="635" Width="520" WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="Visibility" Value="Collapsed" />
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -54,7 +58,7 @@
                 </LinearGradientBrush>
             </Label.Foreground>
         </Label>
-        <Label Content="by Juliusz Dowsilas and Jakub Pawelak" HorizontalAlignment="Left" Margin="299,264,0,0" VerticalAlignment="Top" FontStyle="Normal" FontWeight="Normal">
+        <Label Content="by Juliusz Dowsilas and Jakub Pawelak" HorizontalAlignment="Left" Margin="298,599,0,0" VerticalAlignment="Top" FontStyle="Normal" FontWeight="Normal">
             <Label.Foreground>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FF444444"/>
@@ -62,8 +66,26 @@
                 </LinearGradientBrush>
             </Label.Foreground>
         </Label>
-        <Label Content="High Score Table:" HorizontalAlignment="Left" Margin="23,318,0,0" VerticalAlignment="Top"/>
-        <DataGrid x:Name="scoreGrid" d:ItemsSource="{Binding}" Margin="23,349,20,67"/>
+        <Label Content="Score Table:" HorizontalAlignment="Center" Margin="0,276,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="20" Background="{x:Null}">
+            <Label.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black"/>
+                    <GradientStop Color="White" Offset="0.791"/>
+                    <GradientStop Color="#FFF9F9F9" Offset="0.429"/>
+                </LinearGradientBrush>
+            </Label.Foreground>
+        </Label>
+        <Grid Margin="40,318,40,36">
+            <ListView Name="playerListView" d:ItemsSource="{d:SampleData ItemCount=5}" Background="{x:Null}" BorderBrush="{x:Null}" FontWeight="Bold" Height="280" VerticalAlignment="Center" FontStyle="Normal" SelectionMode="Single" Cursor="Arrow" Focusable="False" Foreground="Black" HorizontalAlignment="Center" FontSize="16" Width="178">
+                <ListView.View>
+                    <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
+                        <GridViewColumn/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+        </Grid>
 
     </Grid>
+
 </Window>

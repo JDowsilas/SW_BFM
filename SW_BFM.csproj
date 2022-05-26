@@ -89,11 +89,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PlayersDataSet.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PlayersDataSet.xsd</DependentUpon>
-    </Compile>
     <Compile Include="playerSummary.xaml.cs">
       <DependentUpon>playerSummary.xaml</DependentUpon>
     </Compile>
@@ -114,17 +109,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="PlayersDataSet.xsc">
-      <DependentUpon>PlayersDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="PlayersDataSet.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>PlayersDataSet.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="PlayersDataSet.xss">
-      <DependentUpon>PlayersDataSet.xsd</DependentUpon>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -134,13 +118,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Database.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Database_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>Database.mdf</DependentUpon>
-    </Content>
     <None Include="Resources\boss.wav" />
     <Resource Include="Sokol.gif" />
     <Resource Include="images\AMOGUS.gif" />
@@ -150,6 +127,8 @@
     <Resource Include="images\Shrek.png" />
     <Resource Include="images\Sokol.gif" />
     <Resource Include="images\Wazowski.gif" />
+    <Resource Include="images\AMOGUS2.png" />
+    <Resource Include="images\bossCrit.png" />
     <Content Include="music\game_over.wav" />
     <None Include="Resources\Wazowski.gif" />
     <None Include="Resources\Sokol.gif" />
